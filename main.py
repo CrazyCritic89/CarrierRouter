@@ -4,7 +4,7 @@ import math
 
 # Configure
 source = "Sol"
-destin = "Colonia"
+destin = "Nogambe"
 split = 480
 radius = 500-split
 if radius > 100:
@@ -73,44 +73,58 @@ zprv = z1
 
 tfuel = 0
 
-for i in range(1,ptpd+1):
-    xcur = x1 + xdfp * i
-    ycur = y1 + ydfp * i
-    zcur = z1 + zdfp * i
-    print(i)
-    print("Current Step Pos", xcur, ycur, zcur)
-    
-    #print(math.dist([xprv,yprv,zprv],[xcur,ycur,zcur]))
+if ptpd > 0:
+    for i in range(1,ptpd+1):
+        xcur = x1 + xdfp * i
+        ycur = y1 + ydfp * i
+        zcur = z1 + zdfp * i
+        print(i)
+        print("Current Step Pos", math.floor(xcur), math.floor(ycur), math.floor(zcur))
+        
+        #print(math.dist([xprv,yprv,zprv],[xcur,ycur,zcur]))
 
-    data ={"x" : xcur,
-           "y" : ycur,
-           "z" : zcur,
-           "radius" : radius,
-           "showCoordinates" : "1"}
+        data ={"x" : xcur,
+               "y" : ycur,
+               "z" : zcur,
+               "radius" : radius,
+               "showCoordinates" : "1"}
 
-    res = requests.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
-    resj = res.json()
+        res = requests.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
+        resj = res.json()
 
-    print("System", resj[0]["name"])
+        print("System", resj[0]["name"])
 
-    xsys = resj[0]["coords"]["x"]
-    ysys = resj[0]["coords"]["y"]
-    zsys = resj[0]["coords"]["z"]
+        xsys = resj[0]["coords"]["x"]
+        ysys = resj[0]["coords"]["y"]
+        zsys = resj[0]["coords"]["z"]
 
-    jdist = math.dist([xprv,yprv,zprv],[xsys,ysys,zsys])
+        jdist = math.dist([xprv,yprv,zprv],[xsys,ysys,zsys])
 
+        print("Jump Distance", jdist)
+
+        fuel = math.ceil(5+(jdist * 25000 / 200000))
+
+        print("Fuel", fuel)
+
+        # apdat = [ resj[0]["name"], fuel ]
+
+        tfuel = tfuel + fuel
+
+        xprv = xsys
+        yprv = ysys
+        zprv = zsys
+
+    print("Final Jump")
+    print(ptpd+1)
+    jdist = math.dist([xsys,ysys,zsys],[x2,y2,z2])
     print("Jump Distance", jdist)
-
-    fuel = 5+(jdist * 25000 / 200000)
-
+    fuel = math.ceil(5+(jdist * 25000 / 200000))
     print("Fuel", fuel)
-
-    # apdat = [ resj[0]["name"], fuel ]
-
     tfuel = tfuel + fuel
-
-    xprv = xsys
-    yprv = ysys
-    zprv = zsys
-
-print("Total Fuel", tfuel)
+    print("Total Fuel", tfuel)
+else:
+    print("Final Jump")
+    print(ptpd+1)
+    print("Jump Distance", dist)
+    fuel = math.ceil(5+(dist * 25000 / 200000))
+    print("Total Fuel", fuel)
