@@ -1,32 +1,46 @@
 import requests
-import json
 import math
+import sys
 
 # Configure
 source = "Sol"
-destin = "Nogambe"
-split = 480
-radius = 500-split
+destin = "Colonia"
+split = 495
+radius = 500-split-1
 if radius > 100:
     radius = 100
 capc = 0
+
+jumps = []
+apdat = []
+
+s = requests.Session()
 
 # Get Data
 data ={"systemName" : source,
        "showCoordinates" : "1"}
 
-res1 = requests.get('https://www.edsm.net/api-v1/system', params=data)
+res1 = s.get('https://www.edsm.net/api-v1/system', params=data)
 res1j = res1.json()
 
 data ={"systemName" : destin,
        "showCoordinates" : "1"}
 
-res2 = requests.get('https://www.edsm.net/api-v1/system', params=data)
+res2 = s.get('https://www.edsm.net/api-v1/system', params=data)
 res2j = res2.json()
 
 print(res1)
 
 print(res1j)
+
+
+if len(res1j) == 0:
+    print("Recieved empty response, source system", source, "may be invalid")
+    sys.exit(0)
+    
+
+apdat = [res1j["name"], 0, 0]
+jumps.append(apdat)
 
 x1 = res1j["coords"]["x"]
 y1 = res1j["coords"]["y"]
@@ -35,6 +49,10 @@ z1 = res1j["coords"]["z"]
 print(x1, y1, z1)
 
 print(res2j)
+
+if len(res2j) == 0:
+    print("Recieved empty response, destination system", destin, "may be invalid")
+    sys.exit(0)
 
 x2 = res2j["coords"]["x"]
 y2 = res2j["coords"]["y"]
@@ -72,6 +90,7 @@ xprv = x1
 yprv = y1
 zprv = z1
 
+
 tfuel = 0
 
 if ptpd > 0:
@@ -90,10 +109,15 @@ if ptpd > 0:
                "radius" : radius,
                "showCoordinates" : "1"}
 
-        res = requests.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
+        res = s.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
         resj = res.json()
 
+        if len(resj) == 0:
+            print("Recieved empty response. This may be caused by a too small split value making it unable to find a system.")
+            sys.exit(0)
+
         print("System", resj[0]["name"])
+
 
         xsys = resj[0]["coords"]["x"]
         ysys = resj[0]["coords"]["y"]
@@ -109,6 +133,9 @@ if ptpd > 0:
 
         # apdat = [ resj[0]["name"], fuel ]
 
+        apdat = [resj[0]["name"], jdist, fuel]
+        jumps.append(apdat)
+
         tfuel = tfuel + fuel
 
         xprv = xsys
@@ -123,9 +150,18 @@ if ptpd > 0:
     print("Fuel", fuel)
     tfuel = tfuel + fuel
     print("Total Fuel", tfuel)
+    apdat = [res2j["name"], jdist, fuel]
 else:
     print("Final Jump")
     print(ptpd+1)
     print("Jump Distance", dist)
     fuel = math.ceil(5+(dist * (capc + 25000) / 200000))
     print("Total Fuel", fuel)
+    apdat = [res2j["name"], dist, fuel]
+
+jumps.append(apdat)
+
+print(jumps)
+
+for i in jumps:
+    print(str(i[0]).ljust(30)+str(round(i[1],2))+"\t"+str(i[2]))
