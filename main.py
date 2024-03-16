@@ -1,6 +1,7 @@
 import requests
 import math
 import sys
+import time
 
 # Configure
 source = input("Enter Source System: ")
@@ -71,10 +72,18 @@ zprv = z1
 
 tfuel = 0
 
+retrycount = 0
+
+i = 1
+
+split = 495
+
 # Run through splits
 print("Routing...", end='')
 if ptpd > 0:
-    for i in range(1,ptpd+1):
+    while i < ptpd+1:
+        radius = 500-split-0.5
+        
         xcur = x1 + xdfp * i
         ycur = y1 + ydfp * i
         zcur = z1 + zdfp * i
@@ -89,13 +98,18 @@ if ptpd > 0:
         resj = res.json()
 
         if res.status_code == 429:
-            print("\nToo many requests. Please try again later.")
-            sys.exit(1)
-        
+            if retrycount == 10:
+                print("\nRetry count exceeded. Exiting...")
+                sys.exit(1)
+            print("\nToo many requests. Trying again in 30 seconds...")
+            time.sleep(30)
+            retrycount += 1
+            ses = requests.Session()
+            continue
         
         if len(resj) == 0:
-            print("\nReceived empty response. This may be caused by a too small split value making it unable to find a system.")
-            sys.exit(0)
+            split -= 5
+            continue
 
         xsys = resj[0]["coords"]["x"]
         ysys = resj[0]["coords"]["y"]
@@ -114,8 +128,12 @@ if ptpd > 0:
         yprv = ysys
         zprv = zsys
 
+        split = 495
+
         print("\rRouting...",str(round(i/(ptpd)*100))+"%", end='')
         sys.stdout.flush()
+        
+        i += 1
 
     jdist = math.dist([xsys,ysys,zsys],[x2,y2,z2])
     fuel = math.ceil(5+(jdist * (capc + 25000) / 200000))
@@ -128,7 +146,6 @@ else:
 
 jumps.append(apdat)
 
-#print(jumps)
 print("\nSystem                        Jump Dist  Fuel")
 
 for i in jumps:
