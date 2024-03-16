@@ -3,13 +3,13 @@ import math
 import sys
 
 # Configure
-source = input("Enter source system: ")
-destin = input("Enter destination system: ")
+source = input("Enter Source System: ")
+destin = input("Enter Destination System: ")
+capc = input("Enter Used Capacity: ")
 split = 480
 radius = 500-split-1
 if radius > 100:
     radius = 100
-capc = 0
 
 jumps = []
 apdat = []
