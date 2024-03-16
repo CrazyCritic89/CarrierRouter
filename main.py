@@ -5,7 +5,7 @@ import sys
 # Configure
 source = input("Enter Source System: ")
 destin = input("Enter Destination System: ")
-capc = input("Enter Used Capacity: ")
+capc = int(input("Enter Used Capacity [0]: ").strip() or "0")
 split = 480
 radius = 500-split-1
 if radius > 100:
@@ -30,10 +30,8 @@ res2 = ses.get('https://www.edsm.net/api-v1/system', params=data)
 res2j = res2.json()
 
 if len(res1j) == 0:
-    print("Received empty response. Source system", '"'+source+'"', "may be invalid.")
+    print("Recieved empty response. Source system", '"'+source+'"', "may be invalid.")
     sys.exit(0)
-
-print("Source System:     ", source)
     
 apdat = [res1j["name"], 0, 0]
 jumps.append(apdat)
@@ -43,10 +41,8 @@ y1 = res1j["coords"]["y"]
 z1 = res1j["coords"]["z"]
 
 if len(res2j) == 0:
-    print("Received empty response. Destination system", '"'+destin+'"', "may be invalid.")
+    print("Recieved empty response. Destination system", '"'+destin+'"', "may be invalid.")
     sys.exit(0)
-
-print("Destination System:", destin)
 
 x2 = res2j["coords"]["x"]
 y2 = res2j["coords"]["y"]
@@ -98,7 +94,7 @@ if ptpd > 0:
         
         
         if len(resj) == 0:
-            print("\nReceived empty response. This may be caused by a too small split value making it unable to find a system.")
+            print("\nRecieved empty response. This may be caused by a too small split value making it unable to find a system.")
             sys.exit(0)
 
         xsys = resj[0]["coords"]["x"]
