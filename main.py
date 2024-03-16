@@ -30,7 +30,7 @@ res2 = ses.get('https://www.edsm.net/api-v1/system', params=data)
 res2j = res2.json()
 
 if len(res1j) == 0:
-    print("Recieved empty response. Source system", '"'+source+'"', "may be invalid.")
+    print("Received empty response. Source system", '"'+source+'"', "may be invalid.")
     sys.exit(0)
 
 print("Source System:     ", source)
@@ -43,7 +43,7 @@ y1 = res1j["coords"]["y"]
 z1 = res1j["coords"]["z"]
 
 if len(res2j) == 0:
-    print("Recieved empty response. Destination system", '"'+destin+'"', "may be invalid.")
+    print("Received empty response. Destination system", '"'+destin+'"', "may be invalid.")
     sys.exit(0)
 
 print("Destination System:", destin)
@@ -98,7 +98,7 @@ if ptpd > 0:
         
         
         if len(resj) == 0:
-            print("\nRecieved empty response. This may be caused by a too small split value making it unable to find a system.")
+            print("\nReceived empty response. This may be caused by a too small split value making it unable to find a system.")
             sys.exit(0)
 
         xsys = resj[0]["coords"]["x"]
