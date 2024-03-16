@@ -5,7 +5,7 @@ import sys
 # Configure
 source = "Sol"
 destin = "Colonia"
-split = 495
+split = 480
 radius = 500-split-1
 if radius > 100:
     radius = 100
@@ -35,7 +35,7 @@ print(res1j)
 
 
 if len(res1j) == 0:
-    print("Recieved empty response, source system", source, "may be invalid")
+    print("Recieved empty response. Source system", source, "may be invalid")
     sys.exit(0)
     
 
@@ -51,7 +51,7 @@ print(x1, y1, z1)
 print(res2j)
 
 if len(res2j) == 0:
-    print("Recieved empty response, destination system", destin, "may be invalid")
+    print("Recieved empty response. Destination system", destin, "may be invalid")
     sys.exit(0)
 
 x2 = res2j["coords"]["x"]
