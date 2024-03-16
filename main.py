@@ -9,6 +9,7 @@ split = 480
 radius = 500-split
 if radius > 100:
     radius = 100
+capc = 0
 
 # Get Data
 data ={"systemName" : source,
@@ -102,7 +103,7 @@ if ptpd > 0:
 
         print("Jump Distance", jdist)
 
-        fuel = math.ceil(5+(jdist * 25000 / 200000))
+        fuel = math.ceil(5+(jdist * (capc + 25000) / 200000))
 
         print("Fuel", fuel)
 
@@ -118,7 +119,7 @@ if ptpd > 0:
     print(ptpd+1)
     jdist = math.dist([xsys,ysys,zsys],[x2,y2,z2])
     print("Jump Distance", jdist)
-    fuel = math.ceil(5+(jdist * 25000 / 200000))
+    fuel = math.ceil(5+(jdist * (capc + 25000) / 200000))
     print("Fuel", fuel)
     tfuel = tfuel + fuel
     print("Total Fuel", tfuel)
@@ -126,5 +127,5 @@ else:
     print("Final Jump")
     print(ptpd+1)
     print("Jump Distance", dist)
-    fuel = math.ceil(5+(dist * 25000 / 200000))
+    fuel = math.ceil(5+(dist * (capc + 25000) / 200000))
     print("Total Fuel", fuel)
