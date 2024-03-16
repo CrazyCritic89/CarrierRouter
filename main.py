@@ -71,7 +71,7 @@ xprv = x1
 yprv = y1
 zprv = z1
 
-jumps=[]
+tfuel = 0
 
 for i in range(1,ptpd+1):
     xcur = x1 + xdfp * i
@@ -105,10 +105,12 @@ for i in range(1,ptpd+1):
 
     print("Fuel", fuel)
 
-    apdat = [ resj[0]["name"], fuel ]
+    # apdat = [ resj[0]["name"], fuel ]
 
-    jumps.append(apdat)
+    tfuel = tfuel + fuel
 
     xprv = xsys
     yprv = ysys
     zprv = zsys
+
+print("Total Fuel", tfuel)
