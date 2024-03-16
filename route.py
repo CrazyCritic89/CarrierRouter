@@ -7,10 +7,9 @@ import time
 source = input("Enter Source System: ")
 destin = input("Enter Destination System: ")
 capc = int(input("Enter Used Capacity [0]: ").strip() or "0")
-split = 480
-radius = 500-split-1
-if radius > 100:
-    radius = 100
+
+split = 490
+sizeinc = 5
 
 jumps = []
 apdat = []
@@ -76,25 +75,25 @@ retrycount = 0
 
 i = 1
 
-split = 495
+#split = 495
+
+size = 1
 
 # Run through splits
 print("Routing...", end='')
 if ptpd > 0:
     while i < ptpd+1:
-        radius = 500-split-0.5
-        
-        xcur = x1 + xdfp * i
-        ycur = y1 + ydfp * i
-        zcur = z1 + zdfp * i
+        xcur = x1 + xdfp * (i - (size/split))
+        ycur = y1 + ydfp * (i - (size/split))
+        zcur = z1 + zdfp * (i - (size/split))
 
         data ={"x" : xcur,
                "y" : ycur,
                "z" : zcur,
-               "radius" : radius,
+               "size" : size,
                "showCoordinates" : "1"}
 
-        res = ses.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
+        res = ses.get("https://www.edsm.net/api-v1/cube-systems", params=data)
         resj = res.json()
 
         if res.status_code == 429:
@@ -108,7 +107,7 @@ if ptpd > 0:
             continue
         
         if len(resj) == 0:
-            split -= 5
+            size += sizeinc
             continue
 
         xsys = resj[0]["coords"]["x"]
@@ -128,7 +127,7 @@ if ptpd > 0:
         yprv = ysys
         zprv = zsys
 
-        split = 495
+        size = 1
 
         print("\rRouting...",str(round(i/(ptpd)*100))+"%", end='')
         sys.stdout.flush()
