@@ -145,10 +145,18 @@ else:
 
 jumps.append(apdat)
 
-print("\nSystem                        Jump Dist  Fuel")
+# Find longest string
+hold = ""
+for i in jumps:
+    if len(i[0]) > len(hold):
+        hold = i[0]
+
+fitto = len(hold)
+
+print("\n"+"System".ljust(fitto+2)+"Jump Dist   Fuel")
 
 for i in jumps:
-    print(str(i[0]).ljust(30)+str(round(i[1],2)).ljust(11)+str(i[2]))
+    print(str(i[0]).ljust(fitto+2)+str(round(i[1],2)).ljust(12)+str(i[2]))
 
 print("Total Jumps:", ptpd+1)
 print("Total Fuel: ", tfuel)
