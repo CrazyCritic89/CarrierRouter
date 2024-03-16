@@ -14,19 +14,19 @@ capc = 0
 jumps = []
 apdat = []
 
-s = requests.Session()
+ses = requests.Session()
 
 # Get Data
 data ={"systemName" : source,
        "showCoordinates" : "1"}
 
-res1 = s.get('https://www.edsm.net/api-v1/system', params=data)
+res1 = ses.get('https://www.edsm.net/api-v1/system', params=data)
 res1j = res1.json()
 
 data ={"systemName" : destin,
        "showCoordinates" : "1"}
 
-res2 = s.get('https://www.edsm.net/api-v1/system', params=data)
+res2 = ses.get('https://www.edsm.net/api-v1/system', params=data)
 res2j = res2.json()
 
 if len(res1j) == 0:
@@ -89,11 +89,16 @@ if ptpd > 0:
                "radius" : radius,
                "showCoordinates" : "1"}
 
-        res = s.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
+        res = ses.get("https://www.edsm.net/api-v1/sphere-systems", params=data)
         resj = res.json()
 
+        if res.status_code == 429:
+            print("\nToo many requests. Please try again later.")
+            sys.exit(1)
+        
+        
         if len(resj) == 0:
-            print("Recieved empty response. This may be caused by a too small split value making it unable to find a system.")
+            print("\nRecieved empty response. This may be caused by a too small split value making it unable to find a system.")
             sys.exit(0)
 
         xsys = resj[0]["coords"]["x"]
